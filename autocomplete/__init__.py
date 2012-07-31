@@ -11,7 +11,7 @@ except:
 
 import mmseg
 
-class Autocomplete ():
+class Autocomplete (object):
   """
   An example usage:
 
