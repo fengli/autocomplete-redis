@@ -108,21 +108,7 @@ class Autocomplete ():
       self.r.zinterstore (cache_key, map (lambda x: "%s:%s"%(self.indexbase,x), search_strings))
       self.r.expire (cache_key, 10 * 60)
 
-    ids=self.r.zrevrange (cache_key, 0, 5)
+    ids=self.r.zrevrange (cache_key, 0, self.limits)
     if not ids: return ids
     return map(lambda x:simplejson.loads(x),
                self.r.hmget(self.database, *ids))
-
-index_mapping={'term':'title',
-               'id':'id',
-               }
-
-def test ():
-  items='[{"score": "9", "id": "1", "title": "轻轻地你走了"}, \
-  {"score": "8", "id": "2", "title": "正如你轻轻地来"}, \
-  {"score": "8.5", "id": "3", "title": "你挥一挥衣袖，不带走一片云彩"}]'
-  a=Autocomplete(items=items,mapping=index_mapping)
-  a.rebuild_index ()
-  print a.search_query (u'你 轻轻')
-  print a.search_query (u'轻轻')
-  print a.search_query (u'你 带走')

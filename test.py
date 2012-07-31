@@ -35,5 +35,19 @@ class testAutocomplete (unittest.TestCase):
     self.assertEqual(len(results),1)
     self.assertEqual(results[0]['id'],'3')
 
+  def test_index_mapping (self):
+    self.index_mapping={
+      'term':lambda x:x.get('title')+x.get('id'),
+      'id':'id',
+      }
+    self.a=Autocomplete(items=self.items,mapping=self.index_mapping)
+    self.a.rebuild_index ()
+    results=self.a.search_query (u'1')
+    self.assertEqual(len(results),1)
+    self.assertEqual(results[0]['id'],'1')
+    results=self.a.search_query (u'2')
+    self.assertEqual(len(results),1)
+    self.assertEqual(results[0]['id'],'2')
+
 if __name__=='__main__':
   unittest.main ()
