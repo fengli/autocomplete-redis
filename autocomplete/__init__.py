@@ -70,7 +70,7 @@ class Autocomplete (object):
     """
     mod = get_model (self.app_label, self.model_label)
     for item in mod.objects.all ():
-      yield simplejson.loads(serializers.seriallize ('json', item, self.fields))
+      yield simplejson.loads(serializers.serialize ('json', item, self.fields))
 
   def _init_objs_from_json_lists (self):
     """
