@@ -1,11 +1,7 @@
 #-*-coding:utf-8-*-
-
 from autocomplete import Autocomplete
+import os
 import unittest
-try:
-  import simplejson
-except:
-  from django.utils import simplejson
 
 class testAutocomplete (unittest.TestCase):
   def setUp (self):
@@ -19,7 +15,8 @@ class testAutocomplete (unittest.TestCase):
     self.a.rebuild_index ()
 
   def test_initilize_from_filename (self):
-    a=Autocomplete(filename='input.json')
+    testfile = os.path.abspath('test/input.json')
+    a=Autocomplete(filename=testfile)
     a.rebuild_index ()
     results=a.search_query (u'你 轻轻')
     self.assertEqual(len(results),2)
@@ -40,6 +37,11 @@ class testAutocomplete (unittest.TestCase):
 
   def test_search_query3 (self):
     results=self.a.search_query (u'你 带走')
+    self.assertEqual(len(results),1)
+    self.assertEqual(results[0]['id'],'3')
+
+  def test_search_query4 (self):
+    results=self.a.search_query (u'你挥一挥衣袖，不带走一片云彩')
     self.assertEqual(len(results),1)
     self.assertEqual(results[0]['id'],'3')
 

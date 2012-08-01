@@ -157,10 +157,11 @@ class Autocomplete (object):
     Normalize the search string.
     """
     tokens = mmseg.Algorithm(prefix.lower())
-    return (token.text for token in tokens)
+    return [token.text for token in tokens]
 
   def search_query (self,prefix):
     search_strings = self.normalize (prefix)
+    print search_strings
 
     if not search_strings: return []
 
