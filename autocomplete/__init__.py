@@ -44,7 +44,7 @@ class Autocomplete (object):
     self.database='database:%s'%modelname
     self.indexbase='indexbase:%s'%modelname
     self.limits=limits
-    # self.items=simplejson.loads(items)
+    self.fields=fields
     self.cached=True
     self.mapping=mapping
     self.filename=filename
