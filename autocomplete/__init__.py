@@ -1,5 +1,4 @@
 #-*- coding:utf-8 -*-
-
 VERSION = '0.1'
 
 import redis
@@ -9,15 +8,21 @@ try:
 except:
   from django.utils import simplejson
 
+try:
+  from django.core import serializers
+  from django.db.models.loading import get_model
+except:
+  pass
+
 import mmseg
 
 class Autocomplete (object):
   """
   An example usage:
 
-  items='[{"score": "9", "id": "1", "title": "轻轻地你走了"}, \
-  {"score": "8", "id": "2", "title": "正如你轻轻地来"}, \
-  {"score": "8.5", "id": "3", "title": "你挥一挥衣袖，不带走一片云彩"}]'
+  items=['{"score": "9", "id": "1", "title": "轻轻地你走了"}', \
+  '{"score": "8", "id": "2", "title": "正如你轻轻地来"}', \
+  '{"score": "8.5", "id": "3", "title": "你挥一挥衣袖，不带走一片云彩"}']
 
   a=Autocomplete(items=items,mapping=index_mapping)
   a.rebuild_index ()
@@ -31,15 +36,63 @@ class Autocomplete (object):
   """
 
   def __init__ (self, redisaddr="localhost", modelname="book",
-                limits=5, cached=True, items=None, mapping=None):
+                limits=5, cached=True, mapping=None, filename=None,
+                jsonitems=None, app_label=None, model_label=None, fields=None):
+
     self.r = redis.Redis (redisaddr)
+    if model_label: modelname = model_label
     self.database='database:%s'%modelname
     self.indexbase='indexbase:%s'%modelname
     self.limits=limits
-    self.items=simplejson.loads(items)
+    # self.items=simplejson.loads(items)
     self.cached=True
     self.mapping=mapping
+    self.filename=filename
+    self.app_label=app_label
+    self.model_label=model_label
+    self.jsonitems=jsonitems
     mmseg.Dictionary.load_dictionaries()
+    self._init_objs_auto ()
+
+  def _init_objs_from_json_file (self):
+    """
+    Initialize indexed objects from file self.filename.
+    Each line of the file should be one json object.
+    """
+    fi = open (self.filename, 'r')
+    for line in fi.xreadlines ():
+      yield (simplejson.loads (line))
+
+  def _init_objs_from_model (self):
+    """
+    Initialize indexed objects from model with
+    app.model.
+    """
+    mod = get_model (self.app_label, self.model_label)
+    for item in mod.objects.all ():
+      yield simplejson.loads(serializers.seriallize ('json', item, self.fields))
+
+  def _init_objs_from_json_lists (self):
+    """
+    Initialize indexed objects from a list of
+    json objects.
+    """
+    for jsonitem in self.jsonitems:
+      yield simplejson.loads (jsonitem)
+
+  def _init_objs_auto (self):
+    """
+    Automatically decide which one to use as the index
+    item generator.
+    """
+    if self.filename:
+      self.item_generator = self._init_objs_from_json_file
+    elif self.app_label and self.model_label:
+      self.item_generator = self._init_objs_from_model
+    elif self.jsonitems:
+      self.item_generator = self._init_objs_from_json_lists
+    else:
+      raise Exception ('You have to specify the objects source you want to index.')
 
   def rebuild_index (self):
     self.del_index ()
@@ -56,7 +109,7 @@ class Autocomplete (object):
     """
     Build index for items.
     """
-    for item in self.items:
+    for item in self.item_generator ():
       self.add_item (item)
 
   def add_item (self,item):
@@ -85,6 +138,10 @@ class Autocomplete (object):
     """
     Get prefixs for TERM.
     """
+    # Normalization
+    term=term.lower()
+
+    # Prefixs for term
     prefixs=[]
     tokens=mmseg.Algorithm(term)
     for token in tokens:
@@ -98,7 +155,7 @@ class Autocomplete (object):
     """
     Normalize the search string.
     """
-    return prefix.split()
+    return prefix.lower().split()
 
   def search_query (self,prefix):
     search_strings = self.normalize (prefix)

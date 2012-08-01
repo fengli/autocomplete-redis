@@ -9,14 +9,22 @@ except:
 
 class testAutocomplete (unittest.TestCase):
   def setUp (self):
-    self.items='[{"score": "9", "id": "1", "title": "轻轻地你走了"}, \
-    {"score": "8", "id": "2", "title": "正如你轻轻地来"}, \
-    {"score": "8.5", "id": "3", "title": "你挥一挥衣袖，不带走一片云彩"}]'
+    self.items=['{"score": "9", "id": "1", "title": "轻轻地你走了"}', \
+                '{"score": "8", "id": "2", "title": "正如你轻轻地来"}', \
+                '{"score": "8.5", "id": "3", "title": "你挥一挥衣袖，不带走一片云彩"}']
     self.index_mapping={'term':'title',
                         'id':'id',
                         }
-    self.a=Autocomplete(items=self.items,mapping=self.index_mapping)
+    self.a=Autocomplete(jsonitems=self.items,mapping=self.index_mapping)
     self.a.rebuild_index ()
+
+  def test_initilize_from_filename (self):
+    a=Autocomplete(filename='input.json')
+    a.rebuild_index ()
+    results=a.search_query (u'你 轻轻')
+    self.assertEqual(len(results),2)
+    self.assertEqual(results[0]['id'],'1')
+    self.assertEqual(results[1]['id'],'2')
 
   def test_search_query1 (self):
     results=self.a.search_query (u'你 轻轻')
@@ -40,7 +48,7 @@ class testAutocomplete (unittest.TestCase):
       'term':lambda x:x.get('title')+x.get('id'),
       'id':'id',
       }
-    self.a=Autocomplete(items=self.items,mapping=self.index_mapping)
+    self.a=Autocomplete(jsonitems=self.items,mapping=self.index_mapping)
     self.a.rebuild_index ()
     results=self.a.search_query (u'1')
     self.assertEqual(len(results),1)
