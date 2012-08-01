@@ -71,7 +71,10 @@ class Autocomplete (object):
     """
     mod = get_model (self.app_label, self.model_label)
     for item in queryset_iterator (mod.objects.all ()):
-      yield simplejson.loads(serializers.serialize ('json', [item,], fields=self.fields))[0]
+      modelitem = simplejson.loads(serializers.serialize ('json', [item,], fields=self.fields))[0]
+      cleanitem = modelitem['fields']
+      cleanitem['pk'] = modelitem['pk']
+      yield (cleanitem)
 
   def _init_objs_from_json_lists (self):
     """
