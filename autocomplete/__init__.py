@@ -15,6 +15,7 @@ except:
   pass
 
 import mmseg
+from autocomplete.utils import queryset_iterator
 
 class Autocomplete (object):
   """
@@ -69,7 +70,7 @@ class Autocomplete (object):
     app.model.
     """
     mod = get_model (self.app_label, self.model_label)
-    for item in mod.objects.all ():
+    for item in queryset_iterator (mod.objects.all ()):
       yield simplejson.loads(serializers.serialize ('json', [item,], fields=self.fields))[0]
 
   def _init_objs_from_json_lists (self):
@@ -155,10 +156,12 @@ class Autocomplete (object):
     """
     Normalize the search string.
     """
-    return prefix.lower().split()
+    tokens = mmseg.Algorithm(prefix.lower())
+    return (token.text for token in tokens)
 
   def search_query (self,prefix):
     search_strings = self.normalize (prefix)
+
     if not search_strings: return []
 
     cache_key = "%s:%s" % (self.indexbase, ('|').join(search_strings))
