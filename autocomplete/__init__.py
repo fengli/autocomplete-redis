@@ -113,8 +113,11 @@ class Autocomplete (object):
     """
     Build index for items.
     """
+    cnt=0
     for item in self.item_generator ():
+      if cnt%1000 == 0: print 'building index for %d items' % cnt
       self.add_item (item)
+      cnt=cnt+1
 
   def add_item (self,item):
     """
