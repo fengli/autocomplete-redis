@@ -96,7 +96,7 @@ autocomplete-redis的输入可以是list, json文档或者django中的model类�
 ```
    这时你只需要传递一个额外的参数，mapping={'id':'pk','term':'title','score':'score'}，将你的键值映射到这三个键值来。这个mapping也可以是函数，比如
 
-```python
+```
    mapping = {
     'id':'pk',
     'term':lambda x:' '.join([x['title'],x['author']]),
