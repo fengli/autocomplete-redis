@@ -146,6 +146,6 @@ class Autocomplete (object):
 
 bring to you by:
 
-* http://ohbooklist.com
-* `ikandou杂志订阅 <http://ikandou.com>`_:每天推送新鲜的报纸和杂志到你的Kindle.
-* `ikandou万卷书 <http://ikandou.com/book>`_: mobi格式和6寸pdf的图书共享站点，可以下载或者直接推送到你的Kindle。
+* 读书单：http://ohbooklist.com
+* ikandou杂志订阅：http://ikandou.com :每天推送新鲜的报纸和杂志到你的Kindle.
+* ikandou万卷书：http://ikandou.com/book : mobi格式和6寸pdf的图书共享站点，可以下载或者直接推送到你的Kindle。
