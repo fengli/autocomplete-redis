@@ -11,8 +11,8 @@ setup(
     description='Redis based autocompletion (build index and search query).',
     long_description=long_description,
     author='Feng Li',
-    author_email='okidogiii@gmail.com',
-    license='BSD License',
+    author_email='okidogii@gmail.com',
+    license='MIT License',
     url='https://github.com/fengli/autocomplete-redis.git',
     platforms=["any"],
     classifiers=[
