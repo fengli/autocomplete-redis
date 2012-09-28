@@ -1,7 +1,7 @@
 autocomplete-redis
 ============
 
-autocomplete-redis 是基于redis的自动补全，他会自动索引你要自动补全的句子，然后根据你的输入返回包含这个输入的句子。这儿有一个完整的演示实例： http://ohbooklist.com/redis ，我们索引了3.7万本书的名字。
+autocomplete-redis 是基于redis的自动补全，他会自动索引你要自动补全的句子，然后根据你的输入返回包含这个输入的句子。这儿有一个完整的演示实例： http://ohbooklist.com/redis/ ，我们索引了3.7万本书的名字。
 
 安装
 ---------
