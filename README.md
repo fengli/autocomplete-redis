@@ -55,7 +55,7 @@ autocomplete-redis的输入可以是list, json文档或者django中的model类�
    {"score": "8", "id": "2", "term": "正如你轻轻地来"}
    {"score": "8.5", "id": "3", "term": "你挥一挥衣袖，不带走一片云彩"}
 
-   a=Autocomplete(filename=testfile, modelname="whateveryouwant")
+   a=Autocomplete(filename="input.json", modelname="whateveryouwant")
    a.rebuild_index ()
    results=a.search_query (u'你 轻轻')
    print results
@@ -144,7 +144,8 @@ class Autocomplete (object):
 * app_lable,model_label: (只有在索引model的时候使用)
 * fileds: 你希望索引model中的哪些fields (只有在索引model的时候使用)，默认索引全部的fields.
 
-bring to you by:
+Bring to you by:
+----------------
 
 * 读书单：http://ohbooklist.com
 * ikandou杂志订阅：http://ikandou.com :每天推送新鲜的报纸和杂志到你的Kindle.
