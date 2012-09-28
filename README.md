@@ -8,7 +8,7 @@ autocomplete-redis 是基于redis的自动补全，他会自动索引你要自�
 
 * 安装pip(如果没有安装过的话)： `easy_install pip`
 
-* 安装pymmseg中文粉刺： `pip install -e git://github.com/pluskid/pymmseg-cpp.git` 依赖pymmseg中文分词，安装之。
+* 安装pymmseg中文分词： `pip install -e git://github.com/pluskid/pymmseg-cpp.git` 依赖pymmseg中文分词，安装之。
 
 * 安装autocomplete-redis： `pip install -e git://github.com/fengli/autocomplete-redis.git` 
 
@@ -21,10 +21,12 @@ autocomplete-redis 是基于redis的自动补全，他会自动索引你要自�
    {"score": "8", "id": "2", "term": "正如你轻轻地来"}
    {"score": "8.5", "id": "3", "term": "你挥一挥衣袖，不带走一片云彩"}
 ```
+score是返回结果排序的rank值，最大的值最靠前。
+
 * 建立索引和查询
 
 ```python
-   a=Autocomplete(filename=testfile, modelname="whateveryouwant")
+   a=Autocomplete(filename="input.json", modelname="whateveryouwant")
    a.rebuild_index ()
    results=a.search_query (u'你 轻轻')
    [{"score": "9", "id": "1", "term": "轻轻地你走了"}, {"score": "8", "id": "2", "term": "正如你轻轻地来"}]
@@ -42,7 +44,7 @@ autocomplete-redis的输入可以是list, json文档或者django中的model类�
     items=['{"score": "9", "id": "1", "term": "轻轻地你走了"}', \
            '{"score": "8", "id": "2", "term": "正如你轻轻地来"}', \
            '{"score": "8.5", "id": "3", "term": "你挥一挥衣袖，不带走一片云彩"}']
-    a=Autocomplete(jsonitems=self.items, modelname="namingme")
+    a=Autocomplete(jsonitems=items, modelname="whateveryouwant")
     a.search_query (u'轻轻')
 ```
 
@@ -69,6 +71,7 @@ autocomplete-redis的输入可以是list, json文档或者django中的model类�
   class book (models.Model):
     term=models.CharField (max_length=200)
     score=models.IntegerField (default=0)
+    id=models.IntegerField ()
 ```
 
    你可以这样建立索引：
@@ -94,7 +97,13 @@ autocomplete-redis的输入可以是list, json文档或者django中的model类�
    {"score": "8", "pk": "2", "title": "正如你轻轻地来","author":"徐志摩"}
    {"score": "8.5", "pk": "3", "title": "你挥一挥衣袖，不带走一片云彩","author":"徐志摩"}
 ```
-   这时你只需要传递一个额外的参数，mapping={'id':'pk','term':'title','score':'score'}，将你的键值映射到这三个键值来。这个mapping也可以是函数，比如
+   这时你只需要传递一个额外的参数，
+
+   ```python
+   mapping={'id':'pk','term':'title','score':'score'}
+   ```
+
+   将你的键值映射到这三个键值来。这个mapping也可以是函数，比如
 
 ```python
    mapping = {
@@ -135,3 +144,8 @@ class Autocomplete (object):
 * app_lable,model_label: (只有在索引model的时候使用)
 * fileds: 你希望索引model中的哪些fields (只有在索引model的时候使用)，默认索引全部的fields.
 
+bring to you by:
+
+* http://ohbooklist.com
+* `ikandou杂志订阅 <http://ikandou.com>`_:每天推送新鲜的报纸和杂志到你的Kindle.
+* `ikandou万卷书 <http://ikandou.com/book>`_: mobi格式和6寸pdf的图书共享站点，可以下载或者直接推送到你的Kindle。
