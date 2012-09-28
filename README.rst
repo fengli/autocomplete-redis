@@ -106,19 +106,23 @@ autocomplete-redis的输入可以是list, json文档或者django中的model类�
     在这个例子中，可以这样使用
 
 ```python    
+
     a=Autocomplete (filename="input.json",modelname="whateveryouwant",mapping=mapping)
     a.rebuild_index ()
     a.search_query (u'徐志摩')
+
 ```
 
 所有可能的参数
 ---------------
 
 ```python
+
 class Autocomplete (object):
   def __init__ (self, redisaddr="localhost", modelname="book",
                 limits=5, cached=True, mapping=None, filename=None,
                 jsonitems=None, app_label=None, model_label=None, fields=None):
+
 ```
 
 * redisaddr: 你的redis实例的地址
