@@ -1,11 +1,10 @@
 from distutils.core import setup
-import autocomplete
-
 long_description = open('README.md').read()
+VERSION = '0.1'
 
 setup(
     name='autocomplete',
-    version=autocomplete.VERSION,
+    version=VERSION,
     packages=['autocomplete', 
               ],
     description='Redis based autocompletion (build index and search query).',

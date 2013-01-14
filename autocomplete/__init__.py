@@ -1,6 +1,4 @@
 #-*- coding:utf-8 -*-
-VERSION = '0.1'
-
 import redis
 
 try:
@@ -167,7 +165,6 @@ class Autocomplete (object):
 
   def search_query (self,prefix):
     search_strings = self.normalize (prefix)
-    print search_strings
 
     if not search_strings: return []
 
