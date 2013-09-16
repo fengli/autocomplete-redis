@@ -1,16 +1,16 @@
 autocomplete-redis
 ============
 
-autocomplete-redis 是基于redis的自动补全，他会自动索引你要自动补全的句子，然后根据你的输入返回包含这个输入的句子。这儿有一个完整的演示实例： http://ohbooklist.com/redis/ ，我们索引了3.7万本书的名字。
+autocomplete-redis 是基于redis的自动补全，他会自动索引你要自动补全的句子，然后根据你的输入返回包含这个输入的句子。这儿有一个完整的演示实例： http://readpi.com ,索引了一些书的名字。
 
 安装
 ---------
 
 * 安装pip(如果没有安装过的话)： `easy_install pip`
 
-* 安装pymmseg中文分词： `pip install -e git://github.com/pluskid/pymmseg-cpp.git` 依赖pymmseg中文分词，安装之。
+* 安装pymmseg中文分词： `pip install -e git+https://github.com/pluskid/pymmseg-cpp.git#egg=pymmseg-dev` 依赖pymmseg中文分词，安装之。
 
-* 安装autocomplete-redis： `pip install -e git://github.com/fengli/autocomplete-redis.git` 
+* 安装autocomplete-redis： `pip install -e git+https://github.com/fengli/autocomplete-redis.git#egg=autocomplete-dev` 
 
 快速使用
 ----------
@@ -147,6 +147,4 @@ class Autocomplete (object):
 Bring to you by:
 ----------------
 
-* 读书单：http://ohbooklist.com
-* ikandou杂志订阅：http://ikandou.com :每天推送新鲜的报纸和杂志到你的Kindle.
-* ikandou万卷书：http://ikandou.com/book : mobi格式和6寸pdf的图书共享站点，可以下载或者直接推送到你的Kindle。
+* 阅读派：http://readpi.com
