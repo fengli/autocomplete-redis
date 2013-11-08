@@ -1,6 +1,6 @@
 from distutils.core import setup
 long_description = open('README.md').read()
-VERSION = '0.1'
+VERSION = '1.0beta'
 
 setup(
     name='autocomplete',
@@ -17,7 +17,7 @@ setup(
     classifiers=[
         'Development Status :: 1 - Beta',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
