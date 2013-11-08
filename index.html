@@ -31,153 +31,84 @@
         <h1>
 <a name="autocomplete-redis" class="anchor" href="#autocomplete-redis"><span class="octicon octicon-link"></span></a>autocomplete-redis</h1>
 
-<p>autocomplete-redis 是基于redis的自动补全，他会自动索引你要自动补全的句子，然后根据你的输入返回包含这个输入的句子。这儿有一个完整的演示实例： <a href="http://readpi.com">http://readpi.com</a> ,索引了一些书的名字，效果如下图：</p>
-
-<p><img src="http://blog.readpi.com/wp-content/uploads/2013/09/autocomplete-demo.png" alt="autocomplete-demo"></p>
+<p>autocomplete-redis is a quora like automatic autocompletion based on redis.</p>
 
 <h2>
-<a name="%E5%AE%89%E8%A3%85" class="anchor" href="#%E5%AE%89%E8%A3%85"><span class="octicon octicon-link"></span></a>安装</h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
 <ul>
-<li><p>安装pip(如果没有安装过的话)： <code>easy_install pip</code></p></li>
-<li><p>安装pymmseg中文分词： <code>pip install -e git+https://github.com/pluskid/pymmseg-cpp.git#egg=pymmseg-dev</code> 依赖pymmseg中文分词，安装之。</p></li>
-<li><p>安装autocomplete-redis： <code>pip install -e git+https://github.com/fengli/autocomplete-redis.git#egg=autocomplete-dev</code> </p></li>
+<li><p>install pip (if you haven't yet) <code>easy_install pip</code></p></li>
+<li><p>install pymmseg (support for Chinese Characters)： <code>pip install pymmseg</code></p></li>
+<li><p>install autocomplete-redis： <code>pip install -e git+https://github.com/fengli/autocomplete-redis.git#egg=autocomplete-dev</code> </p></li>
 </ul><h2>
-<a name="%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8" class="anchor" href="#%E5%BF%AB%E9%80%9F%E4%BD%BF%E7%94%A8"><span class="octicon octicon-link"></span></a>快速使用</h2>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick start</h2>
 
 <ul>
-<li>假设你有如下需要索引的json文本 input.json:</li>
-</ul><div class="highlight highlight-python"><pre>   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"9"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"1"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"轻轻地你走了"</span><span class="p">}</span>
-   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"2"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"正如你轻轻地来"</span><span class="p">}</span>
-   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8.5"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"3"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"你挥一挥衣袖，不带走一片云彩"</span><span class="p">}</span>
+<li>Assume you have few items to index.</li>
+</ul><div class="highlight highlight-python"><pre><span class="n">items</span><span class="o">=</span><span class="p">[{</span><span class="s">"id"</span><span class="p">:</span><span class="s">'1'</span><span class="p">,</span> <span class="s">"score"</span><span class="p">:</span><span class="mi">9</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">u"hello world, that's great"</span><span class="p">},</span>
+       <span class="p">{</span><span class="s">"id"</span><span class="p">:</span><span class="s">'2'</span><span class="p">,</span> <span class="s">"score"</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">u"what the hell or yell"</span><span class="p">},</span>
+       <span class="p">{</span><span class="s">"id"</span><span class="p">:</span><span class="s">'3'</span><span class="p">,</span> <span class="s">"score"</span><span class="p">:</span><span class="mf">8.5</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span><span class="s">u"World is like a box of chocolate"</span><span class="p">},</span>
+      <span class="p">]</span>
 </pre></div>
 
-<p>score是返回结果排序的rank值，最大的值最靠前。</p>
+<p>The code for build the index and search is simple:</p>
 
-<ul>
-<li>建立索引和查询</li>
-</ul><div class="highlight highlight-python"><pre>   <span class="n">a</span><span class="o">=</span><span class="n">Autocomplete</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">"input.json"</span><span class="p">,</span> <span class="n">modelname</span><span class="o">=</span><span class="s">"whateveryouwant"</span><span class="p">)</span>
-   <span class="n">a</span><span class="o">.</span><span class="n">rebuild_index</span> <span class="p">()</span>
-   <span class="n">results</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">search_query</span> <span class="p">(</span><span class="s">u'你 轻轻'</span><span class="p">)</span>
-   <span class="p">[{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"9"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"1"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"轻轻地你走了"</span><span class="p">},</span> <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"2"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"正如你轻轻地来"</span><span class="p">}]</span>
+<div class="highlight highlight-python"><pre><span class="kn">from</span> <span class="nn">autocomplete</span> <span class="kn">import</span> <span class="n">Autocomplete</span>
+
+<span class="c">#build index</span>
+<span class="n">au</span> <span class="o">=</span> <span class="n">Autocomplete</span> <span class="p">(</span><span class="s">"scope"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+  <span class="n">au</span><span class="o">.</span><span class="n">add_item</span> <span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<span class="c">#search</span>
+<span class="n">restuls</span> <span class="o">=</span> <span class="n">au</span><span class="o">.</span><span class="n">search_query</span> <span class="p">(</span><span class="s">u'hel'</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">results</span>
+<span class="p">[{</span><span class="s">'term'</span><span class="p">:</span> <span class="s">'what the hell or yell'</span><span class="p">,</span> <span class="s">'score'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s">'id'</span><span class="p">:</span> <span class="s">'2'</span><span class="p">},</span> <span class="p">{</span><span class="s">'term'</span><span class="p">:</span> <span class="s">"hello world, that's great"</span><span class="p">,</span> <span class="s">'score'</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s">'id'</span><span class="p">:</span> <span class="s">'1'</span><span class="p">}]</span>
 </pre></div>
-
-<p>filename是你要索引的文件名，modelname是一个在redis数据库中唯一的名字，你可以跟你的应用起名。</p>
 
 <h2>
-<a name="%E8%AF%A6%E7%BB%86%E7%9A%84%E8%AF%B4%E6%98%8E" class="anchor" href="#%E8%AF%A6%E7%BB%86%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="octicon octicon-link"></span></a>详细的说明</h2>
-
-<p>autocomplete-redis的输入可以是list, json文档或者django中的model类。</p>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
 
 <ul>
-<li>输入list</li>
-</ul><div class="highlight highlight-python"><pre>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s">'{"score": "9", "id": "1", "term": "轻轻地你走了"}'</span><span class="p">,</span> \
-           <span class="s">'{"score": "8", "id": "2", "term": "正如你轻轻地来"}'</span><span class="p">,</span> \
-           <span class="s">'{"score": "8.5", "id": "3", "term": "你挥一挥衣袖，不带走一片云彩"}'</span><span class="p">]</span>
-    <span class="n">a</span><span class="o">=</span><span class="n">Autocomplete</span><span class="p">(</span><span class="n">jsonitems</span><span class="o">=</span><span class="n">items</span><span class="p">,</span> <span class="n">modelname</span><span class="o">=</span><span class="s">"whateveryouwant"</span><span class="p">)</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">search_query</span> <span class="p">(</span><span class="s">u'轻轻'</span><span class="p">)</span>
+<li>Convention: the item you pass to <code>autocomplete</code> should have at least <code>"id"</code> and <code>"term"</code>, <code>"score"</code> is optional, but it's important if you want to return based on ranking. And you could have other fields as you like.</li>
+</ul><div class="highlight highlight-python"><pre><span class="p">{</span><span class="s">"id"</span><span class="p">:</span><span class="s">'1'</span><span class="p">,</span> <span class="s">"score"</span><span class="p">:</span><span class="mi">9</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">u"hello world, that's great"</span><span class="p">,</span> <span class="s">'meta'</span><span class="p">:</span><span class="s">"1992"</span><span class="p">}</span>
 </pre></div>
-
-<ul>
-<li>输入json文件, 比如input.json如下：</li>
-</ul><div class="highlight highlight-python"><pre>   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"9"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"1"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"轻轻地你走了"</span><span class="p">}</span>
-   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"2"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"正如你轻轻地来"</span><span class="p">}</span>
-   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8.5"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"3"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"你挥一挥衣袖，不带走一片云彩"</span><span class="p">}</span>
-
-   <span class="n">a</span><span class="o">=</span><span class="n">Autocomplete</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">"input.json"</span><span class="p">,</span> <span class="n">modelname</span><span class="o">=</span><span class="s">"whateveryouwant"</span><span class="p">)</span>
-   <span class="n">a</span><span class="o">.</span><span class="n">rebuild_index</span> <span class="p">()</span>
-   <span class="n">results</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">search_query</span> <span class="p">(</span><span class="s">u'你 轻轻'</span><span class="p">)</span>
-   <span class="k">print</span> <span class="n">results</span>
-   <span class="p">[{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"9"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"1"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"轻轻地你走了"</span><span class="p">},</span> <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">:</span> <span class="s">"2"</span><span class="p">,</span> <span class="s">"term"</span><span class="p">:</span> <span class="s">"正如你轻轻地来"</span><span class="p">}]</span>
-</pre></div>
-
-<p>filename是json文件的路径，modelname是确定你redis数据库中唯一的名字。</p>
 
 <ul>
 <li>
-<p>输入是django中的model</p>
-
-<p>比如在你的app booklist中你有一个model定义为</p>
-</li>
-</ul><div class="highlight highlight-python"><pre>  <span class="k">class</span> <span class="nc">book</span> <span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">term</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CharField</span> <span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-    <span class="n">score</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="nb">id</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span> <span class="p">()</span>
-</pre></div>
-
-<p>你可以这样建立索引：</p>
-
-<div class="highlight highlight-python"><pre>   <span class="n">a</span><span class="o">=</span><span class="n">Autocomplete</span> <span class="p">(</span><span class="n">app_label</span><span class="o">=</span><span class="s">'booklist'</span><span class="p">,</span><span class="n">model_label</span><span class="o">=</span><span class="s">'book'</span><span class="p">)</span>
-   <span class="n">a</span><span class="o">.</span><span class="n">rebuild_index</span><span class="p">()</span>
-</pre></div>
-
-<p>搜索可以：</p>
-
-<div class="highlight highlight-python"><pre>   <span class="n">results</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">search_query</span> <span class="p">(</span><span class="s">u'你是'</span><span class="p">)</span>
-</pre></div>
-
-<p>app_label是你的app的名字,model_label是你要索引model的名字。这儿不需要modelname，这个autocomplete-redis会自动根据model_label生成。</p>
+<p><code>def __init__ (self, scope, redisaddr="localhost", limits=5, cached=True)</code></p>
 
 <ul>
-<li>你可能会需要一个mapping</li>
-</ul><p>在以上的例子中，所有的dictionary输入都有固定的键值：score用来给返回的查询结果进行排序，id是返回结果的id值，term是要查询的句子本身。如果你要修改这些默认的值，比如你有input.json：</p>
+<li>scope: Scope allows you to index multiple independent indexes. </li>
+<li>redisaddr: your redis address</li>
+<li>limits: How many results you want to get.</li>
+<li>cached: Cache multiple keys combination?</li>
+</ul>
+</li>
+<li><p><code>def del_index (self)</code></p></li>
+</ul><p>Delete all the indexes. Warning: all data will be deleted.</p>
 
-<div class="highlight highlight-python"><pre>   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"9"</span><span class="p">,</span> <span class="s">"pk"</span><span class="p">:</span> <span class="s">"1"</span><span class="p">,</span> <span class="s">"title"</span><span class="p">:</span> <span class="s">"轻轻地你走了"</span><span class="p">,</span> <span class="s">"author"</span><span class="p">:</span><span class="s">"徐志摩"</span><span class="p">}</span>
-   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8"</span><span class="p">,</span> <span class="s">"pk"</span><span class="p">:</span> <span class="s">"2"</span><span class="p">,</span> <span class="s">"title"</span><span class="p">:</span> <span class="s">"正如你轻轻地来"</span><span class="p">,</span><span class="s">"author"</span><span class="p">:</span><span class="s">"徐志摩"</span><span class="p">}</span>
-   <span class="p">{</span><span class="s">"score"</span><span class="p">:</span> <span class="s">"8.5"</span><span class="p">,</span> <span class="s">"pk"</span><span class="p">:</span> <span class="s">"3"</span><span class="p">,</span> <span class="s">"title"</span><span class="p">:</span> <span class="s">"你挥一挥衣袖，不带走一片云彩"</span><span class="p">,</span><span class="s">"author"</span><span class="p">:</span><span class="s">"徐志摩"</span><span class="p">}</span>
-</pre></div>
+<ul>
+<li><code>def add_item (self,item)</code></li>
+</ul><p>Add item to index.</p>
 
-<p>这时你只需要传递一个额外的参数，</p>
+<ul>
+<li><code>def del_item (self,item)</code></li>
+</ul><p>Delete item from index.</p>
 
-<div class="highlight highlight-python"><pre>   <span class="n">mapping</span><span class="o">=</span><span class="p">{</span><span class="s">'id'</span><span class="p">:</span><span class="s">'pk'</span><span class="p">,</span><span class="s">'term'</span><span class="p">:</span><span class="s">'title'</span><span class="p">,</span><span class="s">'score'</span><span class="p">:</span><span class="s">'score'</span><span class="p">}</span>
-</pre></div>
+<ul>
+<li><code>def update_item (self, item)</code></li>
+</ul><p>Update item indexed with item['id'] with the new version.</p>
 
-<p>将你的键值映射到这三个键值来。这个mapping也可以是函数，比如</p>
-
-<div class="highlight highlight-python"><pre>   <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">'id'</span><span class="p">:</span><span class="s">'pk'</span><span class="p">,</span>
-    <span class="s">'term'</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="s">' '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="s">'title'</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s">'author'</span><span class="p">]]),</span>
-    <span class="s">'score'</span><span class="p">:</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="s">'score'</span><span class="p">],</span>
-    <span class="p">}</span>
-</pre></div>
-
-<pre><code>在这个例子中，可以这样使用
-</code></pre>
-
-<div class="highlight highlight-python"><pre>
-    <span class="n">a</span><span class="o">=</span><span class="n">Autocomplete</span> <span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">"input.json"</span><span class="p">,</span><span class="n">modelname</span><span class="o">=</span><span class="s">"whateveryouwant"</span><span class="p">,</span><span class="n">mapping</span><span class="o">=</span><span class="n">mapping</span><span class="p">)</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">rebuild_index</span> <span class="p">()</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">search_query</span> <span class="p">(</span><span class="s">u'徐志摩'</span><span class="p">)</span>
-
-</pre></div>
+<ul>
+<li><code>def search_query (self,prefix)</code></li>
+</ul><p>Search in database for all items that <code>item['term']</code> included <code>PREFIX</code></p>
 
 <h2>
-<a name="%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E5%8F%82%E6%95%B0" class="anchor" href="#%E6%89%80%E6%9C%89%E5%8F%AF%E8%83%BD%E7%9A%84%E5%8F%82%E6%95%B0"><span class="octicon octicon-link"></span></a>所有可能的参数</h2>
-
-<div class="highlight highlight-python"><pre>
-<span class="k">class</span> <span class="nc">Autocomplete</span> <span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-  <span class="k">def</span> <span class="nf">__init__</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redisaddr</span><span class="o">=</span><span class="s">"localhost"</span><span class="p">,</span> <span class="n">modelname</span><span class="o">=</span><span class="s">"book"</span><span class="p">,</span>
-                <span class="n">limits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cached</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                <span class="n">jsonitems</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">app_label</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">model_label</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-
-</pre></div>
-
-<ul>
-<li>redisaddr: 你的redis实例的地址</li>
-<li>modelname: redis数据库中你这组索引的唯一名字 (在索引数据库的时候不需要提供)</li>
-<li>limits: 返回的结果数</li>
-<li>cached: 是否cache多个键值组合的结果</li>
-<li>mapping: mapping你的字典key值到'term','score'和'id'</li>
-<li>filename: 你的json文件的路径 (只有在json文件模式下使用)</li>
-<li>jsonitems: 要索引的list. (只有在输入list的时候使用)</li>
-<li>app_lable,model_label: (只有在索引model的时候使用)</li>
-<li>fileds: 你希望索引model中的哪些fields (只有在索引model的时候使用)，默认索引全部的fields.</li>
-</ul><h2>
 <a name="bring-to-you-by" class="anchor" href="#bring-to-you-by"><span class="octicon octicon-link"></span></a>Bring to you by:</h2>
 
 <ul>
-<li>阅读派：<a href="http://readpi.com">http://readpi.com</a>
-</li>
+<li><a href="http://readpi.com">http://readpi.com</a></li>
 </ul>
       </section>
       <footer>
