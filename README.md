@@ -17,10 +17,10 @@ Quick start
 * Assume you have few items to index.
 
 ```python
-    items=[{"id":'1', "score":9, "term": u"hello world, that's great"},
-           {"id":'2', "score":10, "term": u"what the hell or yell"},
-           {"id":'3', "score":8.5, "term":u"World is like a box of chocolate"},
-          ]
+items=[{"id":'1', "score":9, "term": u"hello world, that's great"},
+       {"id":'2', "score":10, "term": u"what the hell or yell"},
+       {"id":'3', "score":8.5, "term":u"World is like a box of chocolate"},
+      ]
 ```
 
 The code for build the index and search is simple:
