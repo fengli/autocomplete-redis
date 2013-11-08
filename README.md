@@ -26,15 +26,17 @@ Quick start
 The code for build the index and search is simple:
 
 ```python
-   from autocomplete import Autocomplete
+from autocomplete import Autocomplete
 
-   #build index
-   au = Autocomplete ("scope")
-   for item in items:
-     au.add_item (item)
+#build index
+au = Autocomplete ("scope")
+for item in items:
+  au.add_item (item)
+#search
+restuls = au.search_query (u'hel')
 
-   #search
-   restuls = au.search_query (u'hel')
+print results
+[{'term': 'what the hell or yell', 'score': 10, 'id': '2'}, {'term': "hello world, that's great", 'score': 9, 'id': '1'}]
 ```
 
 
@@ -47,45 +49,33 @@ API
 {"id":'1', "score":9, "term": u"hello world, that's great", 'meta':"1992"}
 ```
 
-```python
-  def __init__ (self, scope, redisaddr="localhost", limits=5, cached=True)
-```
 
-* scope: Scope allows you to index multiple independent indexes. 
-* redisaddr: your redis address
-* limits: How many results you want to get.
-* cached: Cache multiple keys combination?
+* `def __init__ (self, scope, redisaddr="localhost", limits=5, cached=True)`
 
-```python
-  def del_index (self)
-```
+  * scope: Scope allows you to index multiple independent indexes. 
+  * redisaddr: your redis address
+  * limits: How many results you want to get.
+  * cached: Cache multiple keys combination?
 
-* Delete all the indexes. Warning: all data will be deleted.
+* `def del_index (self)`
 
-```python
-  def add_item (self,item)
-```
+Delete all the indexes. Warning: all data will be deleted.
 
-* Add item to index.
+* `def add_item (self,item)`
 
-```python
-  def del_item (self,item):
-```
+Add item to index.
 
-* Delete item from index.
+* `def del_item (self,item)`
 
-```python
-  def update_item (self, item):
-```
+Delete item from index.
 
-* Update item indexed with item['id'] with the new version.
+* `def update_item (self, item)`
 
-```python
-  def search_query (self,prefix):
-```
+Update item indexed with item['id'] with the new version.
 
-* Search in database for all items that `item['term']` included `PREFIX`
+* `def search_query (self,prefix)`
 
+Search in database for all items that `item['term']` included `PREFIX`
 
 Bring to you by:
 ----------------
