@@ -62,9 +62,10 @@ class Autocomplete (object):
     Delete ITEM from the index
     """
     for prefix in self.prefixs_for_term (item['term']):
-      self.r.zrem (self._get_index_key(preifx), item.get('id'))
+      self.r.zrem (self._get_index_key(prefix), item.get('id'))
       if not self.r.zcard (self._get_index_key(prefix)):
         self.r.delete (self._get_index_key(prefix))
+        self.r.srem (self.indexbase, prefix)
 
   def update_item (self, item):
     self.del_item (item)
