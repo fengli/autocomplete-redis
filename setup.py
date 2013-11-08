@@ -1,6 +1,6 @@
 from distutils.core import setup
 long_description = open('README.md').read()
-VERSION = '1.0beta'
+VERSION = '1.0'
 
 setup(
     name='autocomplete',
