@@ -43,7 +43,7 @@ class Autocomplete (object):
     """
     Make sure item has key that's needed.
     """
-    for key in ("id","term"):
+    for key in ("uid","term"):
       if not item.has_key (key):
         raise Exception ("Item should have key %s"%key )
 
@@ -52,17 +52,17 @@ class Autocomplete (object):
     Create index for ITEM.
     """
     self.sanity_check (item)
-    self.r.hset (self.database, item.get('id'), simplejson.dumps(item))
+    self.r.hset (self.database, item.get('uid'), simplejson.dumps(item))
     for prefix in self.prefixs_for_term (item['term']):
       self.r.sadd (self.indexbase, prefix)
-      self.r.zadd (self._get_index_key(prefix),item.get('id'), item.get('score',0))
+      self.r.zadd (self._get_index_key(prefix),item.get('uid'), item.get('score',0))
 
   def del_item (self,item):
     """
     Delete ITEM from the index
     """
     for prefix in self.prefixs_for_term (item['term']):
-      self.r.zrem (self._get_index_key(prefix), item.get('id'))
+      self.r.zrem (self._get_index_key(prefix), item.get('uid'))
       if not self.r.zcard (self._get_index_key(prefix)):
         self.r.delete (self._get_index_key(prefix))
         self.r.srem (self.indexbase, prefix)

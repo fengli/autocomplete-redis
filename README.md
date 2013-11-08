@@ -17,9 +17,9 @@ Quick start
 * Assume you have few items to index.
 
 ```python
-items=[{"id":'1', "score":9, "term": u"hello world, that's great"},
-       {"id":'2', "score":10, "term": u"what the hell or yell"},
-       {"id":'3', "score":8.5, "term":u"World is like a box of chocolate"},
+items=[{"uid":'1', "score":9, "term": u"hello world, that's great"},
+       {"uid":'2', "score":10, "term": u"what the hell or yell"},
+       {"uid":'3', "score":8.5, "term":u"World is like a box of chocolate"},
       ]
 ```
 
@@ -36,19 +36,21 @@ for item in items:
 restuls = au.search_query (u'hel')
 
 print results
-[{'term': 'what the hell or yell', 'score': 10, 'id': '2'}, {'term': "hello world, that's great", 'score': 9, 'id': '1'}]
+[{'term': 'what the hell or yell', 'score': 10, 'uid': '2'}, {'term': "hello world, that's great", 'score': 9, 'uid': '1'}]
 ```
 
 
 API
 ---------------
 
-* Convention: the item you pass to `autocomplete` should have at least `"id"` and `"term"`, `"score"` is optional, but it's important if you want to return based on ranking. And you could have other fields as you like.
+* Convention: the item you pass to `autocomplete` should have at least `"uid"` and `"term"`, `"score"` is optional, but it's important if you want to return based on ranking. And you could have other fields as you like.
 
 ```python
-{"id":'1', "score":9, "term": u"hello world, that's great", 'meta':"1992"}
+{"uid":'1', "score":9, "term": u"hello world, that's great", 'meta':"1992"}
 ```
-
+  * `uid`: the unique identifier for your item
+  * `score`: the returned items sorted by this value.
+  * `term`: the string to be indexed.
 
 * `def __init__ (self, scope, redisaddr="localhost", limits=5, cached=True)`
 
@@ -71,7 +73,7 @@ Delete item from index.
 
 * `def update_item (self, item)`
 
-Update item indexed with item['id'] with the new version.
+Update item indexed with item['uid'] with the new version.
 
 * `def search_query (self,prefix)`
 
